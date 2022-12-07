@@ -10,6 +10,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { Register } from "./controllers/auth.js";
 import authRoutes from "./routes/auth.js"
+import userRoutes from "./routes/users.js"
 
 /* CONFIGURATIONS */
 const __filename = fileURLToPath(import.meta.url);
@@ -41,6 +42,7 @@ app.post("/auth/register", upload.single("picture"), Register)
 
 /* ROUTES */
 app.use("/auth", authRoutes)
+app.use("/users", userRoutes)
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;
@@ -49,7 +51,7 @@ mongoose.connect(process.env.MONGODB_URL, {
     useUnifiedTopology: true,
 }).then(() => {
     app.listen(PORT, () => {
-        console.log(`\x1B[34mServer listening on port: ${PORT}`) //
+        console.log(`\x1B[34mServer listening on port: \x1B[35m${PORT}\x1B[30m`) //
     })
 }).catch((error) => {
     console.log(`\x1B[31m${error}, did not connect`)
