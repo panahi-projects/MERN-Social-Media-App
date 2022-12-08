@@ -15,6 +15,12 @@ import { createPost } from "./controllers/posts.js";
 import postRoutes from "./routes/posts.js"
 import { verifyToken } from "./middleware/auth.js";
 
+/* ONLY FOR DEV TEST */
+import User from "./models/User.js";
+import { users, posts } from "./data/index.js";
+import Post from "./models/Post.js";
+/********************/
+
 /* CONFIGURATIONS */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -55,9 +61,21 @@ mongoose.connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
-    app.listen(PORT, () => {
-        console.log(`\x1B[34mServer listening on port: \x1B[35m${PORT}\x1B[30m`) //
+    app.listen(PORT, async () => {
+        console.log(`\x1B[34mServer listening on port: \x1B[35m${PORT}\x1B[30m`);
+
+        /* 
+            BELOW PIECES OF CODE ARE JUST FOR GENERATING 
+            DUMMY DATA FOR DEV TEST & MUST BE DELETED FOR 
+            PRODUCTION MODE.
+        */
+        const testUser = await User.findOne({ email: "test@test.com" });
+        if (!testUser) {
+            await User.insertMany(users)
+            await Post.insertMany(posts)
+        }
+        /***********************************************/
     })
 }).catch((error) => {
-    console.log(`\x1B[31m${error}, did not connect`)
+    console.log(`\x1B[31m${error}, did not connect\x1B[30m`)
 })
